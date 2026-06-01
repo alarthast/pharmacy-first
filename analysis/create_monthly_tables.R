@@ -53,7 +53,8 @@ pf_consultations_only <- pf_consultations_clean %>%
 pf_conditions_only <- pf_consultations_clean %>%
   filter(
     measure_type == "clinical_condition",
-    interval_start >= as.Date("2024-02-01", group_type == "Overall")
+    interval_start >= as.Date("2024-02-01"), 
+    group_type == "Overall"
   )
 
 dir.create(here("output", "user_tables"))
