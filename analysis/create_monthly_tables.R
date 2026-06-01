@@ -41,7 +41,8 @@ pf_completeness_clean <- pf_completeness %>%
   filter(
     measure == "pfmed_with_pfid" |
       measure == "pfcondition_with_pfid" |
-      measure == "pfmed_and_pfcondition_with_pfid"
+      measure == "pfmed_and_pfcondition_with_pfid",
+    interval_start >= as.Date("2024-02-01")
   ) %>%
   select(-ratio, -denominator) %>%
   rename(count = numerator)
@@ -52,7 +53,8 @@ pf_consultations_only <- pf_consultations_clean %>%
 pf_conditions_only <- pf_consultations_clean %>%
   filter(
     measure_type == "clinical_condition",
-    interval_start >= as.Date("2024-02-01")
+    interval_start >= as.Date("2024-02-01"), 
+    group_type == "Overall"
   )
 
 dir.create(here("output", "user_tables"))
@@ -64,7 +66,7 @@ readr::write_csv(
 
 readr::write_csv(
   pf_conditions_only,
-  here::here("output", "user_tables", "pf_conditions_with_breakdowns.csv")
+  here::here("output", "user_tables", "pf_conditions.csv")
 )
 
 readr::write_csv(
