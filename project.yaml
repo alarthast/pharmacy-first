@@ -125,4 +125,5 @@ actions:
     outputs:
       moderately_sensitive:
         dataset: output/user_tables/pf_consultations_with_breakdowns.csv
+        dataset1: output/user_tables/pf_conditions_with_breakdowns.csv
         dataset2: output/user_tables/pf_completeness.csv
