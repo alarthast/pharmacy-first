@@ -8,7 +8,7 @@ pf_completeness <- read_csv(
   here("output", "measures", "pf_descriptive_stats_measures.csv")
 )
 
-pf_consultations_with_breakdowns_clean <- pf_consultations_with_breakdowns %>%
+pf_consultations_clean <- pf_consultations_with_breakdowns %>%
   mutate(
     group_type = case_when(
       !is.na(age_band) ~ "Age band",
@@ -35,11 +35,7 @@ pf_consultations_with_breakdowns_clean <- pf_consultations_with_breakdowns %>%
     group,
     count = numerator,
   ) %>%
-  arrange(interval_start, measure_type, measure, group_type, group) %>%
-  filter(
-    !(measure_type == "clinical_condition" &
-      interval_start < as.Date("2024-02-01"))
-  )
+  arrange(interval_start, measure_type, measure, group_type, group)
 
 pf_completeness_clean <- pf_completeness %>%
   filter(
@@ -50,11 +46,25 @@ pf_completeness_clean <- pf_completeness %>%
   select(-ratio, -denominator) %>%
   rename(count = numerator)
 
+pf_consultations_only <- pf_consultations_clean %>%
+  filter(measure_type == "clinical_service")
+
+pf_conditions_only <- pf_consultations_clean %>%
+  filter(
+    measure_type == "clinical_condition",
+    interval_start >= as.Date("2024-02-01")
+  )
+
 dir.create(here("output", "user_tables"))
 
 readr::write_csv(
-  pf_consultations_with_breakdowns_clean,
+  pf_consultations_only,
   here::here("output", "user_tables", "pf_consultations_with_breakdowns.csv")
+)
+
+readr::write_csv(
+  pf_conditions_only,
+  here::here("output", "user_tables", "pf_conditions_with_breakdowns.csv")
 )
 
 readr::write_csv(
