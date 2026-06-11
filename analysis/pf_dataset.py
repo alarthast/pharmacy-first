@@ -81,7 +81,7 @@ def get_numerator(
             | (pregnancy_status & (age < 16))
         )
 
-    eligibility = (inclusion_criteria == True) & (exclusion_criteria == False)
+    eligibility = (inclusion_criteria == True) & (exclusion_criteria == False)  # noqa: E712
 
     numerator_counts = (
         selected_events.where(selected_events.snomedct_code.is_in(condition_code))

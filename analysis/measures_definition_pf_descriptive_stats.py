@@ -62,8 +62,6 @@ has_pf_mi_consultation = pf_mi_events.exists_for_patient()
 pf_mi_consultation_count = pf_mi_events.count_for_patient()
 
 
-
-
 # Pharmacy First conditions
 selected_pf_id_conditions = selected_events.where(
     selected_events.consultation_id.is_in(pf_ids)
@@ -133,12 +131,16 @@ count_pf_both = selected_pf_id_medications.where(
 # Count PF consultations (for minor illness code) linked to (1) PF MED ONLY (2) PF CONDITION ONLY (3) BOTH
 # (1) PF MED ONLY
 count_pf_mi_med_only = selected_pf_mi_id_medications.where(
-    selected_pf_mi_id_medications.consultation_id.is_not_in(selected_pf_mi_id_condition_ids)
+    selected_pf_mi_id_medications.consultation_id.is_not_in(
+        selected_pf_mi_id_condition_ids
+    )
 ).consultation_id.count_distinct_for_patient()
 
 # (2) PF CONDITION
 count_pf_mi_condition_only = selected_pf_mi_id_conditions.where(
-    selected_pf_mi_id_conditions.consultation_id.is_not_in(selected_pf_mi_id_medication_ids)
+    selected_pf_mi_id_conditions.consultation_id.is_not_in(
+        selected_pf_mi_id_medication_ids
+    )
 ).consultation_id.count_distinct_for_patient()
 
 # (3) BOTH, these should give us identical numbers

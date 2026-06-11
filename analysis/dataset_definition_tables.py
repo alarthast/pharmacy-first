@@ -84,6 +84,5 @@ dataset.impetigo_numerator = has_event(
 )
 
 dataset.define_population(
-    registration.exists_for_patient()
-    & patients.sex.is_in(["male", "female"])
+    registration.exists_for_patient() & patients.sex.is_in(["male", "female"])
 )
