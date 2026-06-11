@@ -1,17 +1,17 @@
+from config import monthly_intervals_measure_med_counts, start_date_measure_med_counts
 from ehrql import INTERVAL, create_measures, months
+from ehrql.tables.raw.tpp import medications
 from ehrql.tables.tpp import (
-    patients,
     clinical_events,
+    patients,
     practice_registrations,
 )
-from ehrql.tables.raw.tpp import medications
+from pf_variables_library import select_events
 
-from config import start_date_measure_med_counts, monthly_intervals_measure_med_counts
 from codelists import (
     pf_consultation_events_dict,
     pf_med_codelist,
 )
-from pf_variables_library import select_events
 
 # Script taken from Pharmacy First Data Development (for top 10 PF meds table)
 

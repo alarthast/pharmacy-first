@@ -1,5 +1,4 @@
 from datetime import date
-from analysis.dataset_definition_tables import dataset
 
 # Run the following command in the terminal to test the dataset definition dataset_definition_med_status_data_development
 # opensafely exec ehrql:v1 assure analysis/test_pf_dataset_definition.py
@@ -76,14 +75,10 @@ test_data = {
             "sex": "female",
         },
         "clinical_events": [
-            {
-
-            },
+            {},
         ],
         "addresses": {},
-        "ethnicity_from_sus": {
-            "code": "G"
-        },
+        "ethnicity_from_sus": {"code": "G"},
         "practice_registrations": [{"start_date": date(2024, 3, 1)}],
         "expected_in_population": True,
         "expected_columns": {
@@ -103,13 +98,11 @@ test_data = {
             {
                 # Indian
                 "date": date(2000, 1, 1),
-                "snomedct_code": "154225001"
+                "snomedct_code": "154225001",
             },
         ],
         "addresses": {},
-        "ethnicity_from_sus": {
-            "code": "L"
-        },
+        "ethnicity_from_sus": {"code": "L"},
         "practice_registrations": [{"start_date": date(2024, 3, 1)}],
         "expected_in_population": True,
         "expected_columns": {

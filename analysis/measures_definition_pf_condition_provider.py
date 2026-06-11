@@ -1,19 +1,20 @@
+from config import (
+    monthly_intervals_measure_condition_provider,
+    start_date_measure_condition_provider,
+)
 from ehrql import INTERVAL, create_measures, months
 from ehrql.tables.tpp import (
-    patients,
     clinical_events,
+    patients,
     practice_registrations,
 )
+from pf_variables_library import select_events
+
 from analysis.measures_definition_pf_breakdown import (
-    pharmacy_first_conditions_codes,
     imd_quintile,
+    pharmacy_first_conditions_codes,
 )
 from codelists import pf_consultation_events_dict
-from config import (
-    start_date_measure_condition_provider,
-    monthly_intervals_measure_condition_provider,
-)
-from pf_variables_library import select_events
 
 measures = create_measures()
 measures.configure_dummy_data(population_size=1000)

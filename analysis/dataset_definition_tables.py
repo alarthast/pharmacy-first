@@ -1,19 +1,20 @@
+from config import index_date_dataset_tables, start_date_dataset_tables
 from ehrql import create_dataset
 from ehrql.tables.tpp import (
-    patients,
-    clinical_events,
-    practice_registrations,
     addresses,
+    clinical_events,
     ethnicity_from_sus,
+    patients,
+    practice_registrations,
 )
-from config import start_date_dataset_tables, index_date_dataset_tables
 from pf_dataset import (
-    has_event,
-    get_latest_ethnicity,
     get_age_band,
     get_imd,
+    get_latest_ethnicity,
+    has_event,
 )
 from pf_variables_library import select_events
+
 import codelists
 
 launch_date = start_date_dataset_tables
@@ -84,6 +85,5 @@ dataset.impetigo_numerator = has_event(
 )
 
 dataset.define_population(
-    registration.exists_for_patient()
-    & patients.sex.is_in(["male", "female"])
+    registration.exists_for_patient() & patients.sex.is_in(["male", "female"])
 )

@@ -1,23 +1,23 @@
-from ehrql import INTERVAL, create_measures, months, case, when
-from ehrql.tables.tpp import (
-    clinical_events,
-    practice_registrations,
-    patients,
-    addresses,
-    ethnicity_from_sus,
-)
-from codelists import (
-    pf_conditions_codelist,
-    ethnicity_group6_codelist,
-)
-
-from pf_dataset import get_latest_ethnicity
-from codelists import pf_consultation_events_dict
 from config import (
-    start_date_measure_pf_breakdown,
     monthly_intervals_measure_pf_breakdown,
+    start_date_measure_pf_breakdown,
 )
+from ehrql import INTERVAL, case, create_measures, months, when
+from ehrql.tables.tpp import (
+    addresses,
+    clinical_events,
+    ethnicity_from_sus,
+    patients,
+    practice_registrations,
+)
+from pf_dataset import get_latest_ethnicity
 from pf_variables_library import select_events
+
+from codelists import (
+    ethnicity_group6_codelist,
+    pf_conditions_codelist,
+    pf_consultation_events_dict,
+)
 
 measures = create_measures()
 measures.configure_dummy_data(population_size=1000)

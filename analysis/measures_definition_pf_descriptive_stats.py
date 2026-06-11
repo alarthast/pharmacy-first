@@ -1,16 +1,16 @@
+from config import (
+    monthly_intervals_measure_descriptive_stats,
+    start_date_measure_descriptive_stats,
+)
 from ehrql import INTERVAL, create_measures, months
 from ehrql.tables.raw.tpp import medications
-from ehrql.tables.tpp import practice_registrations, patients, clinical_events
-
+from ehrql.tables.tpp import clinical_events, patients, practice_registrations
 from pf_variables_library import select_events
+
 from codelists import (
-    pf_med_codelist,
-    pf_consultation_events_dict,
     pf_conditions_codelist,
-)
-from config import (
-    start_date_measure_descriptive_stats,
-    monthly_intervals_measure_descriptive_stats,
+    pf_consultation_events_dict,
+    pf_med_codelist,
 )
 
 measures = create_measures()
@@ -60,8 +60,6 @@ has_pf_mi_consultation = pf_mi_events.exists_for_patient()
 
 # Counts number of Pharmacy First consultations (for minor illness code)
 pf_mi_consultation_count = pf_mi_events.count_for_patient()
-
-
 
 
 # Pharmacy First conditions
@@ -133,12 +131,16 @@ count_pf_both = selected_pf_id_medications.where(
 # Count PF consultations (for minor illness code) linked to (1) PF MED ONLY (2) PF CONDITION ONLY (3) BOTH
 # (1) PF MED ONLY
 count_pf_mi_med_only = selected_pf_mi_id_medications.where(
-    selected_pf_mi_id_medications.consultation_id.is_not_in(selected_pf_mi_id_condition_ids)
+    selected_pf_mi_id_medications.consultation_id.is_not_in(
+        selected_pf_mi_id_condition_ids
+    )
 ).consultation_id.count_distinct_for_patient()
 
 # (2) PF CONDITION
 count_pf_mi_condition_only = selected_pf_mi_id_conditions.where(
-    selected_pf_mi_id_conditions.consultation_id.is_not_in(selected_pf_mi_id_medication_ids)
+    selected_pf_mi_id_conditions.consultation_id.is_not_in(
+        selected_pf_mi_id_medication_ids
+    )
 ).consultation_id.count_distinct_for_patient()
 
 # (3) BOTH, these should give us identical numbers
