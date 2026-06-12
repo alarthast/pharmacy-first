@@ -3,8 +3,12 @@ from config import (
     start_date_measure_descriptive_stats,
 )
 from ehrql import INTERVAL, create_measures, months
-from ehrql.tables.raw.tpp import medications
-from ehrql.tables.tpp import clinical_events, patients, practice_registrations
+from ehrql.tables.emisv2 import (
+    clinical_events,
+    medications,
+    patients,
+    practice_registrations,
+)
 from pf_variables_library import select_events
 
 from codelists import (

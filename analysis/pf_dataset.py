@@ -1,4 +1,4 @@
-from ehrql.tables.tpp import case, when
+from ehrql import case, when
 from pf_variables_library import check_pregnancy_status, count_past_events
 
 # This file contains functions for the denominators of the patient population for each clinical condition.
@@ -121,6 +121,9 @@ def get_imd(addresses, index_date):
     return imd_quintile
 
 
+# Note: ethnicity_from_sus is not used, as sus data is not available
+# We will tidy usage of get_latest_ethnicity later, for now, just leave it
+# in as a unused argument
 def get_latest_ethnicity(
     index_date, clinical_events, ethnicity_codelist, ethnicity_from_sus, grouping=6
 ):
@@ -147,19 +150,6 @@ def get_latest_ethnicity(
             ),
         )
 
-        ethnicity_from_sus = case(
-            when(ethnicity_from_sus.code.is_in(["A", "B", "C"])).then("White"),
-            when(ethnicity_from_sus.code.is_in(["D", "E", "F", "G"])).then("Mixed"),
-            when(ethnicity_from_sus.code.is_in(["H", "J", "K", "L"])).then(
-                "Asian or Asian British"
-            ),
-            when(ethnicity_from_sus.code.is_in(["M", "N", "P"])).then(
-                "Black or Black British"
-            ),
-            when(ethnicity_from_sus.code.is_in(["R", "S"])).then(
-                "Chinese or Other Ethnic Groups"
-            ),
-        )
     elif grouping == 16:
         latest_ethnicity_from_codes = case(
             when(latest_ethnicity_from_codes_category_num == "1").then("White British"),
@@ -190,32 +180,10 @@ def get_latest_ethnicity(
             ),
         )
 
-        ethnicity_from_sus = case(
-            when(ethnicity_from_sus.code == "A").then("White British"),
-            when(ethnicity_from_sus.code == "B").then("White Irish"),
-            when(ethnicity_from_sus.code == "C").then("Other White"),
-            when(ethnicity_from_sus.code == "D").then("White and Caribbean"),
-            when(ethnicity_from_sus.code == "E").then("White and African"),
-            when(ethnicity_from_sus.code == "F").then("White and Asian"),
-            when(ethnicity_from_sus.code == "G").then("Other Mixed"),
-            when(ethnicity_from_sus.code == "H").then("Indian"),
-            when(ethnicity_from_sus.code == "J").then("Pakistani"),
-            when(ethnicity_from_sus.code == "K").then("Bangladeshi"),
-            when(ethnicity_from_sus.code == "L").then("Other South Asian"),
-            when(ethnicity_from_sus.code == "M").then("Caribbean"),
-            when(ethnicity_from_sus.code == "N").then("African"),
-            when(ethnicity_from_sus.code == "P").then("Other Black"),
-            when(ethnicity_from_sus.code == "R").then("Chinese"),
-            when(ethnicity_from_sus.code == "S").then("All other ethnic groups"),
-        )
-
     ethnicity_combined = case(
         when(latest_ethnicity_from_codes.is_not_null()).then(
             latest_ethnicity_from_codes
         ),
-        when(
-            latest_ethnicity_from_codes.is_null() & ethnicity_from_sus.is_not_null()
-        ).then(ethnicity_from_sus),
         otherwise="Missing",
     )
 
