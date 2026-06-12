@@ -1,10 +1,9 @@
 from ehrql import INTERVAL, create_measures, months, case, when
-from ehrql.tables.tpp import (
+from ehrql.tables.emisv2 import (
     clinical_events,
     practice_registrations,
     patients,
     addresses,
-    ethnicity_from_sus,
 )
 from codelists import (
     pf_conditions_codelist,
@@ -30,7 +29,7 @@ ethnicity_combined = get_latest_ethnicity(
     index_date=INTERVAL.start_date,
     clinical_events=clinical_events,
     ethnicity_codelist=ethnicity_group6_codelist,
-    ethnicity_from_sus=ethnicity_from_sus,
+    ethnicity_from_sus=None,
 )
 # Age bands for age breakdown
 age = patients.age_on(INTERVAL.start_date)
@@ -55,10 +54,13 @@ imd_quintile = case(
     otherwise="Missing",
 )
 
+# Swap patient practice region for patient address MSOA
+# This means that the variable name is not accurate,
+# but allows the code to run for now.
+# TODO: Rename region variables to reference MSOA
+addr = addresses.for_patient_on(INTERVAL.start_date)
 latest_region = case(
-    when(registration.practice_nuts1_region_name.is_not_null()).then(
-        registration.practice_nuts1_region_name
-    ),
+    when(addr.msoa_code.is_not_null()).then(addr.msoa_code),
     otherwise="Missing",
 )
 

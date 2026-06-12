@@ -1,10 +1,9 @@
 from ehrql import create_dataset
-from ehrql.tables.tpp import (
+from ehrql.tables.emisv2 import (
     patients,
     clinical_events,
     practice_registrations,
     addresses,
-    ethnicity_from_sus,
 )
 from config import start_date_dataset_tables, index_date_dataset_tables
 from pf_dataset import (
@@ -44,13 +43,17 @@ selected_pf_id_events = selected_events.where(
 dataset.sex = patients.sex
 dataset.age = patients.age_on(index_date)
 dataset.age_band = get_age_band(patients, index_date)
-dataset.region = registration.practice_nuts1_region_name
+# Swap patient practice region for patient address MSOA
+# This means that the variable name is not accurate,
+# but allows the code to run for now.
+# TODO: Rename dataset.region to dataset.msoa
+dataset.region = addresses.for_patient_on(index_date).msoa_code
 dataset.imd = get_imd(addresses, index_date)
 dataset.ethnicity = get_latest_ethnicity(
     index_date,
     clinical_events,
     codelists.ethnicity_group16_codelist,
-    ethnicity_from_sus,
+    None,
     grouping=16,
 )
 

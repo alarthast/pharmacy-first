@@ -1,6 +1,10 @@
 from ehrql import INTERVAL, create_measures, months
-from ehrql.tables.raw.tpp import medications
-from ehrql.tables.tpp import practice_registrations, patients, clinical_events
+from ehrql.tables.emisv2 import (
+    practice_registrations,
+    patients,
+    clinical_events,
+    medications,
+)
 
 from pf_variables_library import select_events
 from codelists import (
