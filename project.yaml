@@ -7,7 +7,7 @@ expectations:
 actions:
   generate_dataset_definition_tables:
     run: >
-      ehrql:v1
+      ehrql:dev
        generate-dataset analysis/dataset_definition_tables.py
        --test-data-file analysis/test_dataset_definition_tables.py
        --output output/population/pf_tables.csv.gz
@@ -24,7 +24,7 @@ actions:
 
   generate_pf_statistics_measures:
     run: >
-      ehrql:v1 generate-measures analysis/measures_definition_pf_descriptive_stats.py
+      ehrql:dev generate-measures analysis/measures_definition_pf_descriptive_stats.py
       --output output/measures/pf_descriptive_stats_measures.csv
     outputs:
       moderately_sensitive:
@@ -32,7 +32,7 @@ actions:
 
   generate_pf_breakdown_measures:
     run: >
-      ehrql:v1 generate-measures analysis/measures_definition_pf_breakdown.py
+      ehrql:dev generate-measures analysis/measures_definition_pf_breakdown.py
       --output output/measures/pf_breakdown_measures.csv
     outputs:
       moderately_sensitive:
@@ -40,7 +40,7 @@ actions:
 
   generate_pf_med_counts_measures:
     run: >
-      ehrql:v1 generate-measures analysis/measures_definition_pf_med_counts.py
+      ehrql:dev generate-measures analysis/measures_definition_pf_med_counts.py
       --output output/measures/pf_medications_measures.csv
     outputs:
       moderately_sensitive:
