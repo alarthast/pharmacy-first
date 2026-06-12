@@ -9,7 +9,6 @@ actions:
     run: >
       ehrql:dev
        generate-dataset analysis/dataset_definition_tables.py
-       --test-data-file analysis/test_dataset_definition_tables.py
        --output output/population/pf_tables.csv.gz
     outputs:
       highly_sensitive:
