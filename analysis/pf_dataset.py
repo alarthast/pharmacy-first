@@ -1,6 +1,6 @@
 from ehrql import case, when
 from pf_variables_library import check_pregnancy_status, count_past_events
-
+import codelists
 # This file contains functions for the denominators of the patient population for each clinical condition.
 # It will be used to calculate rates, and is separate from pf_variables_library
 
@@ -32,7 +32,7 @@ def get_numerator(
     exclusion_criteria = False
 
     if clinical_pathway == "uti":
-        urt_code = ["1090711000000102"]
+        urt_code = codelists.uti_code
         count_urt_6m = count_past_events(index_date, selected_events, urt_code, 6)
         count_urt_12m = count_past_events(index_date, selected_events, urt_code, 12)
         inclusion_criteria = (
@@ -47,7 +47,7 @@ def get_numerator(
         exclusion_criteria = pregnancy_status
 
     elif clinical_pathway == "impetigo":
-        impetigo_code = ["48277006"]
+        impetigo_code = codelists.impetigo_code
         count_impetigo_12m = count_past_events(
             index_date, selected_events, impetigo_code, 12
         )
@@ -67,7 +67,7 @@ def get_numerator(
         exclusion_criteria = pregnancy_status & (age < 16)
 
     elif clinical_pathway == "otitis_media":
-        acute_otitis_code = ["3110003"]
+        acute_otitis_code = codelists.otitismedia_code
         count_acute_otitis_6m = count_past_events(
             index_date, selected_events, acute_otitis_code, 6
         )

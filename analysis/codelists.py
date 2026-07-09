@@ -91,10 +91,11 @@ pf_consultation_events_dict = {
     + pf_consultation_cp_service,
 }
 
-uti_code = ["1090711000000102"]
-sinusitis_code = ["15805002"]
-insectbite_code = ["262550002"]
-otitismedia_code = ["3110003"]
-sorethroat_code = ["363746003"]
-shingles_code = ["4740000"]
-impetigo_code = ["48277006"]
+pf_conditions_by_term = {v: k for k, v in pf_conditions_codelist.items()}
+uti_code = [pf_conditions_by_term["Uncomplicated urinary tract infection"]]
+sinusitis_code = [pf_conditions_by_term["Acute sinusitis"]]
+insectbite_code = [pf_conditions_by_term["Infected insect bite"]]
+otitismedia_code = [pf_conditions_by_term["Acute otitis media"]]
+sorethroat_code = [pf_conditions_by_term["Acute pharyngitis"]]
+shingles_code = [pf_conditions_by_term["Herpes zoster"]]
+impetigo_code = [pf_conditions_by_term["Impetigo"]]

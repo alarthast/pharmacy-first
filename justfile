@@ -4,7 +4,7 @@ OPENSAFELY_CLI_DIR := "${REPOS_DIR}/opensafely-cli"
 EHRQL_DIR := "${REPOS_DIR}/ehrql"
 
 venv:
-    test -d .venv/ || uv venv
+    test -d .venv/ || uv venv --python 3.13
     uv pip install setuptools
     uv pip install ruff
 
@@ -19,9 +19,19 @@ install-opensafely-cli:
         touch .venv/.opensafely-installed
     fi
 
-opensafely *args: venv build-ehrql-dev-image install-opensafely-cli
+opensafely *args: venv install-opensafely-cli
     #!/usr/bin/env bash
     .venv/bin/opensafely {{ args }}
+
+install-ehrql: venv
+    #!/usr/bin/env bash
+    if [ ! -f .venv/.ehrql-installed ] || [ {{ EHRQL_DIR }}/pyproject.toml -nt .venv/.ehrql-installed ]; then
+        uv pip install -e {{ EHRQL_DIR }}
+        touch .venv/.ehrql-installed
+    fi
+
+ehrql *args: venv install-ehrql
+    .venv/bin/ehrql {{ args }}
 
 @nuke:
     rm -rf metadata/ && mkdir metadata
