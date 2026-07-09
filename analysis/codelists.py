@@ -28,50 +28,10 @@ pregnancy_codelist = codelist_from_csv(
     category_column="term",
 )
 
-acute_otitis_media_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-acute-otitis-media-treatment-full-dmd-codelist.csv",
-    column="code",
-)
+# Pretend this codelist only contains one code
+# TODO: Revert this to a full codelist
+pf_med_codelist = ["22706111000001100"]
 
-impetigo_treatment_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-impetigo-treatment-full-dmd-codelist.csv",
-    column="code",
-)
-
-infected_insect_bites_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-infected-insect-bites-treatment-full-dmd-codelist.csv",
-    column="code",
-)
-
-shingles_treatment_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-shingles-treatment-full-dmd-codelist.csv",
-    column="code",
-)
-
-sinusitis_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-sinusitis-treatment-full-dmd-codelist.csv",
-    column="code",
-)
-
-sore_throat_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-sore-throat-treatment-full-dmd-codelist.csv",
-    column="code",
-)
-
-urinary_tract_infection_tx_codelist = codelist_from_csv(
-    "codelists/opensafely-pharmacy-first-urinary-tract-infection-treatment-full-dmd-codelist.csv",
-    column="code",
-)
-
-pf_med_codelist = (
-    acute_otitis_media_tx_codelist
-    + impetigo_treatment_tx_codelist
-    + infected_insect_bites_tx_codelist
-    + shingles_treatment_tx_codelist
-    + sinusitis_tx_codelist
-    + sore_throat_tx_codelist
-    + urinary_tract_infection_tx_codelist
-)
 # Community Pharmacist Consultation Service for minor illness - 1577041000000109
 pf_consultation_cp_minorillness = ["1577041000000109"]
 # Pharmacy First service - 983341000000102
