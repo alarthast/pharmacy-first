@@ -21,12 +21,6 @@ ethnicity_group16_codelist = codelist_from_csv(
     category_column="Grouping_16",
 )
 
-# Import pregnancy codelist
-pregnancy_codelist = codelist_from_csv(
-    "codelists/nhsd-primary-care-domain-refsets-preg_cod.csv",
-    column="code",
-    category_column="term",
-)
 
 acute_otitis_media_tx_codelist = codelist_from_csv(
     "codelists/opensafely-pharmacy-first-acute-otitis-media-treatment-full-dmd-codelist.csv",
