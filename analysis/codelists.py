@@ -21,12 +21,6 @@ ethnicity_group16_codelist = codelist_from_csv(
     category_column="Grouping_16",
 )
 
-# Import pregnancy codelist
-pregnancy_codelist = codelist_from_csv(
-    "codelists/nhsd-primary-care-domain-refsets-preg_cod.csv",
-    column="code",
-    category_column="term",
-)
 
 # Pretend this codelist only contains one code
 # TODO: Revert this to a full codelist
