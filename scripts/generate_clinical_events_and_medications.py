@@ -38,10 +38,10 @@ def _get_pf_consultation_snomedct_code(consultation_id):
     return codes[consultation_id % 3]
 
 
-def _get_pf_condition_snomedct_code(consultation_id):
+def _get_pf_condition_snomedct_code(patient_id):
     codes = list(codelists.pf_conditions_codelist.keys())
     assert len(codes) == 7
-    return codes[consultation_id % 7]
+    return codes[int(patient_id) % 7]
 
 
 def _get_pf_med_dmd_code():
@@ -160,37 +160,27 @@ def get_non_pf_both(patient_id, consultation_id, consultation_date):
 def fill_rows(patient_ids, clinical_events, medications):
     getters = [
         get_pf_both,
+        get_pf_both,
+        get_pf_both,
+        get_pf_both,
+        get_pf_condition_only,
+        get_pf_condition_only,
         get_pf_condition_only,
         get_pf_med_only,
         get_pf_neither,
         get_non_pf_both,
     ]
 
-    consultation_ids = iter(range(20000))
+    consultation_ids = iter(range(999999))
     events_start_date, events_end_date = config.get_dummy_data_date_range()
     num_possible_days = (events_end_date - events_start_date).days
 
-    num_consultations_per_patient = [i % 4 + 1 for i in range(len(patient_ids))]
+    num_consultations_per_patient = [i % 9 + 1 for i in range(len(patient_ids))]
 
-    for loop_number in range(4):
+    for loop_number in range(9):
         for i, patient_id in enumerate(patient_ids):
             if loop_number >= num_consultations_per_patient[i]:
                 continue
-            consultation_id = next(consultation_ids)
-            consultation_date = events_start_date + datetime.timedelta(
-                days=consultation_id % num_possible_days
-            )
-            getter = getters[consultation_id % len(getters)]
-            generated = getter(patient_id, consultation_id, consultation_date)
-            clinical_events.extend(generated["clinical_events"])
-            medications.extend(generated["medications"])
-
-    consultation_ids = iter(range(20000))
-    events_start_date, events_end_date = config.get_dummy_data_date_range()
-    num_possible_days = (events_end_date - events_start_date).days
-    for i, patient_id in enumerate(patient_ids):
-        num_consultations = i % 4 + 1
-        for _ in range(num_consultations):
             consultation_id = next(consultation_ids)
             consultation_date = events_start_date + datetime.timedelta(
                 days=consultation_id % num_possible_days
