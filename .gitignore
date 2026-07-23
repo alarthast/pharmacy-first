@@ -14,3 +14,4 @@ reports/pharmacy_first_report.html
 reports/pharmacy_first_report.pdf
 reports/pharmacy_first_report_files/*
 .env
+/dummy_tables/
