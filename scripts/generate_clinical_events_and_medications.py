@@ -29,6 +29,7 @@ def get_ethnicity_events(patient_ids):
             patient_id, None, date, ETHNICITY_CODES[i % len(ETHNICITY_CODES)]
         )
         for i, patient_id in enumerate(patient_ids)
+        if int(patient_id) % 100 != 0  # Have missing ethnicity for some patients
     ]
 
 
