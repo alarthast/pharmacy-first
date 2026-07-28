@@ -18,10 +18,11 @@ address = addresses.for_patient_on(DUMMY_DATA_START_DATE)
 
 dataset.imd_rounded = address.imd_rounded
 dataset.msoa_code = address.msoa_code
-
+dataset.date_of_birth = patients.date_of_birth
 
 dataset.define_population(
     registration.exists_for_patient()
     & address.exists_for_patient()
     & patients.sex.is_in(["male", "female"])
+    & patients.date_of_birth.is_not_null()
 )
