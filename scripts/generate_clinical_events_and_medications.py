@@ -49,112 +49,79 @@ def _get_pf_med_dmd_code():
     return codelists.pf_med_codelist[0]
 
 
-def get_pf_both(patient_id, consultation_id, consultation_date):
-    return {
-        "clinical_events": [
+def _build(
+    patient_id,
+    consultation_id,
+    consultation_date,
+    *,
+    consultation_code,
+    condition_code,
+    med_code,
+):
+    # Shared row assembly for every getter below. `consultation_code=None` omits
+    # the consultation clinical event entirely (the non-PF-consultation-linked case).
+    events = []
+    if consultation_code is not None:
+        events.append(
             ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_consultation_snomedct_code(consultation_id),
-            ),
-            ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_condition_snomedct_code(consultation_id),
-            ),
-        ],
-        "medications": [
-            MedicationsRow(
-                patient_id, consultation_id, consultation_date, _get_pf_med_dmd_code()
+                patient_id, consultation_id, consultation_date, consultation_code
             )
+        )
+    events.append(
+        ClinicalEventsRow(
+            patient_id, consultation_id, consultation_date, condition_code
+        )
+    )
+    return {
+        "clinical_events": events,
+        "medications": [
+            MedicationsRow(patient_id, consultation_id, consultation_date, med_code)
         ],
     }
+
+
+def get_pf_both(patient_id, consultation_id, consultation_date):
+    return _build(
+        patient_id,
+        consultation_id,
+        consultation_date,
+        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
+        condition_code=_get_pf_condition_snomedct_code(consultation_id),
+        med_code=_get_pf_med_dmd_code(),
+    )
 
 
 def get_pf_condition_only(patient_id, consultation_id, consultation_date):
-    return {
-        "clinical_events": [
-            ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_consultation_snomedct_code(consultation_id),
-            ),
-            ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_condition_snomedct_code(consultation_id),
-            ),
-        ],
-        "medications": [
-            MedicationsRow(
-                patient_id, consultation_id, consultation_date, NON_PF_DMD_CODE
-            )
-        ],
-    }
+    return _build(
+        patient_id,
+        consultation_id,
+        consultation_date,
+        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
+        condition_code=_get_pf_condition_snomedct_code(consultation_id),
+        med_code=NON_PF_DMD_CODE,
+    )
 
 
 def get_pf_med_only(patient_id, consultation_id, consultation_date):
-    return {
-        "clinical_events": [
-            ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_consultation_snomedct_code(consultation_id),
-            ),
-            ClinicalEventsRow(
-                patient_id, consultation_id, consultation_date, NON_PF_SNOMEDCT_CODE
-            ),
-        ],
-        "medications": [
-            MedicationsRow(
-                patient_id, consultation_id, consultation_date, _get_pf_med_dmd_code()
-            )
-        ],
-    }
+    return _build(
+        patient_id,
+        consultation_id,
+        consultation_date,
+        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
+        condition_code=NON_PF_SNOMEDCT_CODE,
+        med_code=_get_pf_med_dmd_code(),
+    )
 
 
 def get_pf_neither(patient_id, consultation_id, consultation_date):
-    return {
-        "clinical_events": [
-            ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_consultation_snomedct_code(consultation_id),
-            ),
-            ClinicalEventsRow(
-                patient_id, consultation_id, consultation_date, NON_PF_SNOMEDCT_CODE
-            ),
-        ],
-        "medications": [
-            MedicationsRow(
-                patient_id, consultation_id, consultation_date, NON_PF_DMD_CODE
-            )
-        ],
-    }
-
-
-def get_non_pf_both(patient_id, consultation_id, consultation_date):
-    return {
-        "clinical_events": [
-            ClinicalEventsRow(
-                patient_id,
-                consultation_id,
-                consultation_date,
-                _get_pf_condition_snomedct_code(consultation_id),
-            ),
-        ],
-        "medications": [
-            MedicationsRow(
-                patient_id, consultation_id, consultation_date, _get_pf_med_dmd_code()
-            )
-        ],
-    }
+    return _build(
+        patient_id,
+        consultation_id,
+        consultation_date,
+        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
+        condition_code=NON_PF_SNOMEDCT_CODE,
+        med_code=NON_PF_DMD_CODE,
+    )
 
 
 def fill_rows(patient_ids, clinical_events, medications):
@@ -168,7 +135,6 @@ def fill_rows(patient_ids, clinical_events, medications):
         get_pf_condition_only,
         get_pf_med_only,
         get_pf_neither,
-        get_non_pf_both,
     ]
 
     consultation_ids = iter(range(999999))
