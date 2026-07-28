@@ -32,6 +32,7 @@ install-ehrql: venv
 
 dummy-tables: install-ehrql
     .venv/bin/ehrql create-dummy-tables analysis/dummy_tables/dummy_data_definition.py dummy_tables/
+    .venv/bin/python scripts/get_dummy_data_codelists.py
     .venv/bin/python scripts/generate_clinical_events_and_medications.py
 
 ehrql *args: venv install-ehrql
