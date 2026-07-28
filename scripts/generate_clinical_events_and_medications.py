@@ -2,11 +2,19 @@ import collections
 from analysis import codelists, config
 import datetime
 import csv
-
+import json
 
 NON_PF_SNOMEDCT_CODE = "123456789"
 NON_PF_DMD_CODE = "12354611500001104"
 ETHNICITY_CODES = list(codelists.ethnicity_group16_codelist.keys())
+
+
+def load_codelist_by_condition_json():
+    with open("scripts/codelists_by_condition.json", "r") as f:
+        return json.load(f)
+
+
+CODELISTS_BY_CONDITION = load_codelist_by_condition_json()
 
 ClinicalEventsRow = collections.namedtuple(
     "ClinicalEventsRow", ["patient_id", "consultation_id", "date", "snomedct_code"]
@@ -39,15 +47,21 @@ def _get_pf_consultation_snomedct_code(consultation_id):
     return codes[consultation_id % 3]
 
 
+def _get_pf_condition_term(patient_id):
+    keys = list(CODELISTS_BY_CONDITION.keys())
+    assert len(keys) == 7
+    return keys[int(patient_id) % 7]
+
+
 def _get_pf_condition_snomedct_code(patient_id):
-    codes = list(codelists.pf_conditions_codelist.keys())
-    assert len(codes) == 7
-    return codes[int(patient_id) % 7]
+    term = _get_pf_condition_term(patient_id)
+    return CODELISTS_BY_CONDITION[term]["snomed_code"]
 
 
-def _get_pf_med_dmd_code():
-    # for now just use one code
-    return codelists.pf_med_codelist[0]
+def _get_pf_med_dmd_code(patient_id, consultation_id):
+    term = _get_pf_condition_term(patient_id)
+    codelist = CODELISTS_BY_CONDITION[term]["dmd_codes"]
+    return codelist[int(consultation_id) % len(codelist)]
 
 
 def _build(
@@ -88,7 +102,7 @@ def get_pf_both(patient_id, consultation_id, consultation_date):
         consultation_date,
         consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
         condition_code=_get_pf_condition_snomedct_code(consultation_id),
-        med_code=_get_pf_med_dmd_code(),
+        med_code=_get_pf_med_dmd_code(patient_id, consultation_id),
     )
 
 
@@ -110,7 +124,7 @@ def get_pf_med_only(patient_id, consultation_id, consultation_date):
         consultation_date,
         consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
         condition_code=NON_PF_SNOMEDCT_CODE,
-        med_code=_get_pf_med_dmd_code(),
+        med_code=_get_pf_med_dmd_code(patient_id, consultation_id),
     )
 
 
