@@ -129,10 +129,13 @@ def main():
     addresses["msoa_code"] = picked["MSOA"].to_numpy()
     addresses["imd_rounded"] = picked["imd_rounded"].to_numpy()
 
-    # blank out every 20th row)
+    # blank out every 20th row
     missing_mask = (np.arange(n) % 20) == 0
-    addresses.loc[missing_mask, "msoa_code"] = np.nan
-    addresses.loc[missing_mask, "imd_rounded"] = np.nan
+
+    addresses["imd_rounded"] = addresses["imd_rounded"].astype("Int64").astype(str)
+
+    addresses.loc[missing_mask, "msoa_code"] = ""
+    addresses.loc[missing_mask, "imd_rounded"] = ""
 
     lsoa_choices.to_csv("lsoa_choices.csv", index=False)
     addresses.to_csv(addresses_file, index=False)
