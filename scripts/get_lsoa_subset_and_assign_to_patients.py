@@ -90,6 +90,9 @@ def build_lsoa_region_imd_table():
         if name_prefix in seen_names:
             continue
 
+        if region not in ("Yorkshire and The Humber", "North East"):
+            continue
+
         combo_key = (region, imd_quintile)
         if combo_key in seen_combos:
             continue
@@ -118,9 +121,7 @@ def main():
     addresses_file = (
         pathlib.Path(__file__).parents[1] / "dummy_tables" / "addresses.csv"
     )
-    patients_file = (
-        pathlib.Path(__file__).parents[1] / "dummy_tables" / "patients.csv"
-    )
+    patients_file = pathlib.Path(__file__).parents[1] / "dummy_tables" / "patients.csv"
 
     lsoa_choices = build_lsoa_region_imd_table()
 
@@ -128,11 +129,13 @@ def main():
     n = len(patients)
 
     # build one address row per patient, deterministically
-    addresses = pd.DataFrame({
-        "patient_id": patients["patient_id"],
-        "start_date": patients["date_of_birth"],
-        "end_date": "",
-    })
+    addresses = pd.DataFrame(
+        {
+            "patient_id": patients["patient_id"],
+            "start_date": patients["date_of_birth"],
+            "end_date": "",
+        }
+    )
 
     indices = np.arange(n) % len(lsoa_choices)
     picked = lsoa_choices.iloc[indices]
@@ -141,19 +144,16 @@ def main():
     addresses["imd_rounded"] = picked["imd_rounded"].to_numpy()
 
     # blank out every 20th row
-    missing_mask = (np.arange(n) % 20) == 0
+    # missing_mask = (np.arange(n) % 20) == 0
 
     addresses["imd_rounded"] = addresses["imd_rounded"].astype("Int64").astype(str)
 
-    addresses.loc[missing_mask, "msoa_code"] = ""
-    addresses.loc[missing_mask, "imd_rounded"] = ""
+    # addresses.loc[missing_mask, "msoa_code"] = ""
+    # addresses.loc[missing_mask, "imd_rounded"] = ""
 
     lsoa_choices.to_csv("lsoa_choices.csv", index=False)
     addresses.to_csv(addresses_file, index=False)
     return addresses
-
-
-main()
 
 
 main()
