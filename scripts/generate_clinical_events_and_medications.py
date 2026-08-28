@@ -2,12 +2,15 @@ import collections
 import csv
 import datetime
 import json
+import random
 
 from analysis import codelists, config
 
+# For convenience
+random.seed("123456789")
+
 NON_PF_SNOMEDCT_CODE = "123456789"
 NON_PF_DMD_CODE = "12354611500001104"
-ETHNICITY_CODES = list(codelists.ethnicity_group16_codelist.keys())
 
 
 def load_codelist_by_condition_json():
@@ -15,6 +18,9 @@ def load_codelist_by_condition_json():
         return json.load(f)
 
 
+ETHNICITY_CODES = list(codelists.ethnicity_group16_codelist.keys()) + [
+    NON_PF_SNOMEDCT_CODE
+]
 CODELISTS_BY_CONDITION = load_codelist_by_condition_json()
 
 CONSULTATION_SNOMED_CODES = codelists.pf_consultation_events_dict[
@@ -59,19 +65,6 @@ def get_patient_ids(csv_filepath):
     with open(csv_filepath, newline="") as f:
         reader = csv.DictReader(f)
         return [row["patient_id"] for row in reader]
-
-
-def get_ethnicity_events(patient_ids):
-    return [
-        ClinicalEventsRow(
-            patient_id,
-            None,
-            EVENTS_START_DATE,
-            ETHNICITY_CODES[i % len(ETHNICITY_CODES)],
-        )
-        for i, patient_id in enumerate(patient_ids)
-        if int(patient_id) % 100 != 0  # Have missing ethnicity for some patients
-    ]
 
 
 def _get_pf_consultation_snomedct_code(consultation_id):
@@ -211,9 +204,14 @@ def write_csv(filepath, rows):
 
 def main():
     patient_ids = get_patient_ids("dummy_tables/patients.csv")
-    clinical_events = get_ethnicity_events(patient_ids)
-    medications = []
-    fill_rows(patient_ids, clinical_events, medications)
+    clinical_events = [
+        ClinicalEventsRow(
+            patient_id, None, EVENTS_START_DATE, random.choice(ETHNICITY_CODES)
+        )
+        for patient_id in patient_ids
+    ]
+    consultation_clinical_events, medications = get_consultation_rows(patient_ids)
+    clinical_events.extend(consultation_clinical_events)
     write_csv("dummy_tables/clinical_events.csv", clinical_events)
     write_csv("dummy_tables/medications.csv", medications)
 
