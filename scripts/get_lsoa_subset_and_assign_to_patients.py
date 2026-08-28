@@ -7,6 +7,8 @@ import pandas as pd
 
 MEASURE_NUMERIC_COLUMNS = ["ratio", "numerator", "denominator"]
 
+# TODO: Swap to MSOA 2011
+
 
 def get_msoa_to_region_mapping():
     # https://geoportal.statistics.gov.uk/datasets/ons::msoa-2021-to-bua-to-lad-to-region-december-2022-best-fit-lookup-in-ew-v2/about

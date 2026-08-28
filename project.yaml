@@ -5,15 +5,27 @@ expectations:
   population_size: 1000
 
 actions:
-  generate_dataset_definition_tables:
+  generate_dataset_definition_tables_msoa:
     run: >
       ehrql:dev
        generate-dataset analysis/dataset_definition_tables.py
        --test-data-file analysis/test_dataset_definition_tables.py
-       --output output/population/pf_tables.csv.gz
+       --output output/population/pf_tables_msoa.csv
+       --dummy-tables dummy_tables
     outputs:
       highly_sensitive:
-        cohort: output/population/pf_tables.csv.gz
+        cohort: output/population/pf_tables_msoa.csv
+
+  generate_dataset_definition_tables:
+    needs: [generate_dataset_definition_tables_msoa]
+    run: >
+      python:v2 analysis/map_region.py
+      --file-type dataset
+      --src-path output/population/pf_tables_msoa.csv
+      --dest-path output/population/pf_tables_raw.csv
+    outputs:
+      highly_sensitive:
+        measure: output/population/pf_tables_raw.csv     
 
   create_tables:
     run: r:v2 analysis/create_tables.R
@@ -26,14 +38,27 @@ actions:
     run: >
       ehrql:dev generate-measures analysis/measures_definition_pf_descriptive_stats.py
       --output output/measures/pf_descriptive_stats_measures.csv
+      --dummy-tables dummy_tables
     outputs:
       moderately_sensitive:
         measure: output/measures/pf_descriptive_stats_measures.csv
 
-  generate_pf_breakdown_measures:
+  generate_pf_breakdown_measures_msoa:
     run: >
       ehrql:dev generate-measures analysis/measures_definition_pf_breakdown.py
-      --output output/measures/pf_breakdown_measures.csv
+      --output output/measures/pf_breakdown_measures_msoa.csv
+      --dummy-tables dummy_tables
+    outputs:
+      highly_sensitive:
+        measure: output/measures/pf_breakdown_measures_msoa.csv
+
+  generate_pf_breakdown_measures:
+    needs: [generate_pf_breakdown_measures_msoa]
+    run: >
+      python:v2 analysis/map_region.py
+      --file-type measure
+      --src-path output/measures/pf_breakdown_measures_msoa.csv
+      --dest-path output/measures/pf_breakdown_measures.csv
     outputs:
       moderately_sensitive:
         measure: output/measures/pf_breakdown_measures.csv
@@ -42,6 +67,7 @@ actions:
     run: >
       ehrql:dev generate-measures analysis/measures_definition_pf_med_counts.py
       --output output/measures/pf_medications_measures.csv
+      --dummy-tables dummy_tables
     outputs:
       moderately_sensitive:
         measure: output/measures/pf_medications_measures.csv
