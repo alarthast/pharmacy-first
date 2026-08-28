@@ -26,10 +26,12 @@ CODELISTS_BY_CONDITION = load_codelist_by_condition_json()
 CONSULTATION_SNOMED_CODES = codelists.pf_consultation_events_dict[
     "pf_consultation_services_combined"
 ]
-CONDITION_SNOMED_CODES = list(codelists.pf_conditions_codelist.keys())
+CONDITION_SNOMED_CODES = list(codelists.pf_conditions_codelist.keys()) + [
+    NON_PF_SNOMEDCT_CODE
+]
 MEDICATION_DMD_CODES = sorted(
     {code for cond in CODELISTS_BY_CONDITION.values() for code in cond["dmd_codes"]}
-)
+) + [NON_PF_DMD_CODE]
 
 # Dump codelists.json from this file so that it stays in sync with the dummy data
 with open("codelists.json", "w") as f:
@@ -67,130 +69,41 @@ def get_patient_ids(csv_filepath):
         return [row["patient_id"] for row in reader]
 
 
-def _get_pf_consultation_snomedct_code(consultation_id):
-    codes = codelists.pf_consultation_events_dict["pf_consultation_services_combined"]
-    assert len(codes) == 3
-    return codes[consultation_id % 3]
-
-
-def _get_pf_condition_term(patient_id):
-    keys = list(CODELISTS_BY_CONDITION.keys())
-    assert len(keys) == 7
-    return keys[int(patient_id) % 7]
-
-
-def _get_pf_condition_snomedct_code(patient_id):
-    term = _get_pf_condition_term(patient_id)
-    return CODELISTS_BY_CONDITION[term]["snomed_code"]
-
-
-def _get_pf_med_dmd_code(patient_id, consultation_id):
-    term = _get_pf_condition_term(patient_id)
-    codelist = CODELISTS_BY_CONDITION[term]["dmd_codes"]
-    return codelist[int(consultation_id) % len(codelist)]
-
-
-def _build(
-    patient_id,
-    consultation_id,
-    consultation_date,
-    *,
-    consultation_code,
-    condition_code,
-    med_code,
-):
-    events = []
-    events.append(
-        ClinicalEventsRow(
-            patient_id, consultation_id, consultation_date, consultation_code
-        )
-    )
-    events.append(
-        ClinicalEventsRow(
-            patient_id, consultation_id, consultation_date, condition_code
-        )
-    )
-    return {
-        "clinical_events": events,
-        "medications": [
-            MedicationsRow(patient_id, consultation_id, consultation_date, med_code)
-        ],
-    }
-
-
-def get_pf_both(patient_id, consultation_id, consultation_date):
-    return _build(
-        patient_id,
-        consultation_id,
-        consultation_date,
-        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
-        condition_code=_get_pf_condition_snomedct_code(consultation_id),
-        med_code=_get_pf_med_dmd_code(patient_id, consultation_id),
-    )
-
-
-def get_pf_condition_only(patient_id, consultation_id, consultation_date):
-    return _build(
-        patient_id,
-        consultation_id,
-        consultation_date,
-        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
-        condition_code=_get_pf_condition_snomedct_code(consultation_id),
-        med_code=NON_PF_DMD_CODE,
-    )
-
-
-def get_pf_med_only(patient_id, consultation_id, consultation_date):
-    return _build(
-        patient_id,
-        consultation_id,
-        consultation_date,
-        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
-        condition_code=NON_PF_SNOMEDCT_CODE,
-        med_code=_get_pf_med_dmd_code(patient_id, consultation_id),
-    )
-
-
-def get_pf_neither(patient_id, consultation_id, consultation_date):
-    return _build(
-        patient_id,
-        consultation_id,
-        consultation_date,
-        consultation_code=_get_pf_consultation_snomedct_code(consultation_id),
-        condition_code=NON_PF_SNOMEDCT_CODE,
-        med_code=NON_PF_DMD_CODE,
-    )
-
-
-def fill_rows(patient_ids, clinical_events, medications):
-    getters = [
-        get_pf_both,
-        get_pf_both,
-        get_pf_both,
-        get_pf_both,
-        get_pf_condition_only,
-        get_pf_condition_only,
-        get_pf_condition_only,
-        get_pf_med_only,
-        get_pf_neither,
-    ]
-
-    consultation_ids = iter(range(999999))
-
-    num_consultations_per_patient = [i % 9 + 1 for i in range(len(patient_ids))]
-
-    for loop_number in range(9):
-        for i, patient_id in enumerate(patient_ids):
-            if loop_number >= num_consultations_per_patient[i]:
-                continue
-            consultation_id = next(consultation_ids)
+def generate_consultation_rows(patient_ids):
+    clinical_events = []
+    medications = []
+    for patient_id in patient_ids:
+        num_consultations = random.randint(1, 10)
+        for loop_number in range(num_consultations):
+            consultation_id = f"{patient_id}-{loop_number}"
             consultation_date = EVENTS_START_DATE + datetime.timedelta(
-                days=consultation_id % NUM_POSSIBLE_DAYS
+                days=random.randint(0, NUM_POSSIBLE_DAYS - 1)
             )
-            getter = getters[consultation_id % len(getters)]
-            generated = getter(patient_id, consultation_id, consultation_date)
-            clinical_events.extend(generated["clinical_events"])
-            medications.extend(generated["medications"])
+            clinical_events.append(
+                ClinicalEventsRow(
+                    patient_id,
+                    consultation_id,
+                    consultation_date,
+                    random.choice(CONSULTATION_SNOMED_CODES),
+                )
+            )
+            clinical_events.append(
+                ClinicalEventsRow(
+                    patient_id,
+                    consultation_id,
+                    consultation_date,
+                    random.choice(CONDITION_SNOMED_CODES),
+                )
+            )
+            medications.append(
+                MedicationsRow(
+                    patient_id,
+                    consultation_id,
+                    consultation_date,
+                    random.choice(MEDICATION_DMD_CODES),
+                )
+            )
+    return clinical_events, medications
 
 
 def write_csv(filepath, rows):
@@ -210,7 +123,7 @@ def main():
         )
         for patient_id in patient_ids
     ]
-    consultation_clinical_events, medications = get_consultation_rows(patient_ids)
+    consultation_clinical_events, medications = generate_consultation_rows(patient_ids)
     clinical_events.extend(consultation_clinical_events)
     write_csv("dummy_tables/clinical_events.csv", clinical_events)
     write_csv("dummy_tables/medications.csv", medications)
