@@ -517,6 +517,7 @@ plot_pf_med_condition_linkage <- df_pf_descriptive_stats |>
     limits = c(0, 1),
     labels = scales::percent
   ) +
+  coord_cartesian(ylim = c(0, 1)) +
   labs(
     x = NULL,
     y = NULL,
