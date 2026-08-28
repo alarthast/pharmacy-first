@@ -19,7 +19,7 @@ from codelists import (
 
 measures = create_measures()
 measures.configure_dummy_data(population_size=100)
-measures.configure_disclosure_control(enabled=True)
+measures.configure_disclosure_control(enabled=False)
 
 start_date = start_date_measure_descriptive_stats
 monthly_intervals = monthly_intervals_measure_descriptive_stats
