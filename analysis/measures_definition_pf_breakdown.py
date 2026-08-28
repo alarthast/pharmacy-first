@@ -20,6 +20,7 @@ from codelists import (
 
 measures = create_measures()
 measures.configure_dummy_data(population_size=1000)
+measures.configure_disclosure_control(enabled=False)
 
 start_date = start_date_measure_pf_breakdown
 monthly_intervals = monthly_intervals_measure_pf_breakdown
