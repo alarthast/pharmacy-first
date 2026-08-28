@@ -17,6 +17,30 @@ def load_codelist_by_condition_json():
 
 CODELISTS_BY_CONDITION = load_codelist_by_condition_json()
 
+CONSULTATION_SNOMED_CODES = codelists.pf_consultation_events_dict[
+    "pf_consultation_services_combined"
+]
+CONDITION_SNOMED_CODES = list(codelists.pf_conditions_codelist.keys())
+MEDICATION_DMD_CODES = sorted(
+    {code for cond in CODELISTS_BY_CONDITION.values() for code in cond["dmd_codes"]}
+)
+
+# Dump codelists.json from this file so that it stays in sync with the dummy data
+with open("codelists.json", "w") as f:
+    json.dump(
+        {
+            name: codes
+            for name, codes in [
+                ("ETHNICITY_CODES", ETHNICITY_CODES),
+                ("CONSULTATION_SNOMED_CODES", CONSULTATION_SNOMED_CODES),
+                ("CONDITION_SNOMED_CODES", CONDITION_SNOMED_CODES),
+                ("MEDICATION_DMD_CODES", MEDICATION_DMD_CODES),
+            ]
+        },
+        f,
+        indent=2,
+    )
+
 EVENTS_START_DATE, EVENTS_END_DATE = config.get_dummy_data_date_range()
 NUM_POSSIBLE_DAYS = (EVENTS_END_DATE - EVENTS_START_DATE).days
 # Our spec will ask for 2023-11-01 to 2025-01-31 inclusive
