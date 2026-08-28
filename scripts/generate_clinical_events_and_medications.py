@@ -8,6 +8,13 @@ NON_PF_SNOMEDCT_CODE = "123456789"
 NON_PF_DMD_CODE = "12354611500001104"
 ETHNICITY_CODES = list(codelists.ethnicity_group16_codelist.keys())
 
+
+EVENTS_START_DATE, EVENTS_END_DATE = config.get_dummy_data_date_range()
+NUM_POSSIBLE_DAYS = (EVENTS_END_DATE - EVENTS_START_DATE).days
+# Our spec will ask for 2023-11-01 to 2025-01-31 inclusive
+assert EVENTS_START_DATE == datetime.date(2023, 11, 1), EVENTS_START_DATE
+assert EVENTS_END_DATE == datetime.date(2025, 2, 1)
+
 ClinicalEventsRow = collections.namedtuple(
     "ClinicalEventsRow", ["patient_id", "consultation_id", "date", "snomedct_code"]
 )
@@ -23,10 +30,12 @@ def get_patient_ids(csv_filepath):
 
 
 def get_ethnicity_events(patient_ids):
-    date, _ = config.get_dummy_data_date_range()
     return [
         ClinicalEventsRow(
-            patient_id, None, date, ETHNICITY_CODES[i % len(ETHNICITY_CODES)]
+            patient_id,
+            None,
+            EVENTS_START_DATE,
+            ETHNICITY_CODES[i % len(ETHNICITY_CODES)],
         )
         for i, patient_id in enumerate(patient_ids)
         if int(patient_id) % 100 != 0  # Have missing ethnicity for some patients
@@ -136,8 +145,6 @@ def fill_rows(patient_ids, clinical_events, medications):
     ]
 
     consultation_ids = iter(range(999999))
-    events_start_date, events_end_date = config.get_dummy_data_date_range()
-    num_possible_days = (events_end_date - events_start_date).days
 
     num_consultations_per_patient = [i % 9 + 1 for i in range(len(patient_ids))]
 
@@ -146,8 +153,8 @@ def fill_rows(patient_ids, clinical_events, medications):
             if loop_number >= num_consultations_per_patient[i]:
                 continue
             consultation_id = next(consultation_ids)
-            consultation_date = events_start_date + datetime.timedelta(
-                days=consultation_id % num_possible_days
+            consultation_date = EVENTS_START_DATE + datetime.timedelta(
+                days=consultation_id % NUM_POSSIBLE_DAYS
             )
             getter = getters[consultation_id % len(getters)]
             generated = getter(patient_id, consultation_id, consultation_date)
