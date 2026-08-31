@@ -27,7 +27,8 @@ CONSULTATION_SNOMED_CODES = codelists.pf_consultation_events_dict[
     "pf_consultation_services_combined"
 ]
 CONDITION_SNOMED_CODES = list(codelists.pf_conditions_codelist.keys()) + [
-    NON_PF_SNOMEDCT_CODE
+    NON_PF_SNOMEDCT_CODE,
+    "234567890",
 ]
 MEDICATION_DMD_CODES = sorted(
     {code for cond in CODELISTS_BY_CONDITION.values() for code in cond["dmd_codes"]}
