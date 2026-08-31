@@ -73,7 +73,7 @@ def get_patient_ids(csv_filepath):
 def generate_consultation_rows(patient_ids):
     clinical_events = []
     medications = []
-    for patient_id in patient_ids:
+    for patient_id in patient_ids[:100]:
         num_consultations = random.randint(1, 10)
         for loop_number in range(num_consultations):
             consultation_id = f"{patient_id}-{loop_number}"
