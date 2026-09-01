@@ -99,7 +99,7 @@ def generate_consultation_rows(patient_ids):
             medications.append(
                 MedicationsRow(
                     patient_id,
-                    consultation_id,
+                    f"{consultation_id}-med",
                     consultation_date,
                     random.choice(MEDICATION_DMD_CODES),
                 )
