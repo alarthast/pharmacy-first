@@ -44,7 +44,7 @@ age_band = case(
 )
 
 # IMD groupings for IMD breakdown
-imd = addresses.for_patient_on(INTERVAL.start_date).imd_rounded
+imd = addresses.for_patient_on(INTERVAL.start_date).imd_rounded_2019
 max_imd = 32844
 imd_quintile = case(
     when((imd >= 0) & (imd < int(max_imd * 1 / 5))).then("1 (Most Deprived)"),
@@ -61,7 +61,7 @@ imd_quintile = case(
 # TODO: Rename region variables to reference MSOA
 addr = addresses.for_patient_on(INTERVAL.start_date)
 latest_msoa_code = case(
-    when(addr.msoa_code.is_not_null()).then(addr.msoa_code),
+    when(addr.msoa_code_2011.is_not_null()).then(addr.msoa_code_2011),
     otherwise="Missing",
 )
 

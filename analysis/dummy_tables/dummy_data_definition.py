@@ -16,8 +16,8 @@ dataset.configure_dummy_data(population_size=5000)
 registration = practice_registrations.for_patient_on(DUMMY_DATA_START_DATE)
 address = addresses.for_patient_on(DUMMY_DATA_START_DATE)
 
-dataset.imd_rounded = address.imd_rounded
-dataset.msoa_code = address.msoa_code
+dataset.imd_rounded_2019 = address.imd_rounded_2019
+dataset.msoa_code_2011 = address.msoa_code_2011
 dataset.date_of_birth = patients.date_of_birth
 
 dataset.define_population(

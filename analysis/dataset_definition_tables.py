@@ -45,7 +45,7 @@ dataset.sex = patients.sex
 dataset.age = patients.age_on(index_date)
 dataset.age_band = get_age_band(patients, index_date)
 # Swap patient practice region for patient address MSOA
-dataset.msoa_code = addresses.for_patient_on(index_date).msoa_code
+dataset.msoa_code = addresses.for_patient_on(index_date).msoa_code_2011
 dataset.imd = get_imd(addresses, index_date)
 dataset.ethnicity = get_latest_ethnicity(
     index_date,
