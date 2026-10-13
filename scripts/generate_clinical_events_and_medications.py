@@ -70,13 +70,18 @@ def get_patient_ids(csv_filepath):
         return [row["patient_id"] for row in reader]
 
 
+def _to_base64_compatible_string(value):
+    return value.zfill((len(value) + 3) // 4 * 4)
+
+
 def generate_consultation_rows(patient_ids):
     clinical_events = []
     medications = []
     for patient_id in patient_ids[:100]:
         num_consultations = random.randint(1, 10)
         for loop_number in range(num_consultations):
-            consultation_id = f"{patient_id}-{loop_number}"
+            consultation_tag = f"{patient_id}+{loop_number}"
+            consultation_id = _to_base64_compatible_string(consultation_tag)
             consultation_date = EVENTS_START_DATE + datetime.timedelta(
                 days=random.randint(0, NUM_POSSIBLE_DAYS - 1)
             )
@@ -99,7 +104,7 @@ def generate_consultation_rows(patient_ids):
             medications.append(
                 MedicationsRow(
                     patient_id,
-                    f"{consultation_id}-med",
+                    _to_base64_compatible_string(f"{consultation_tag}+med"),
                     consultation_date,
                     random.choice(MEDICATION_DMD_CODES),
                 )
