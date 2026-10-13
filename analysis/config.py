@@ -4,8 +4,8 @@ from dateutil.relativedelta import relativedelta
 
 # Dataset definition: dataset_definition_tables.py
 # Timeframe: 31/01/2024 - 31/01/2025
-start_date_dataset_tables = "2024-01-31"
-index_date_dataset_tables = "2025-01-31"
+start_date_dataset_tables = "2004-01-31"
+index_date_dataset_tables = "2005-01-31"
 
 # Is not in the project.yaml
 # Measure: measures_definition_pf_condition_provider.py
@@ -18,16 +18,16 @@ index_date_dataset_tables = "2025-01-31"
 monthly_dashboard_intervals = 15
 
 # Measure: measures_definition_pf_breakdown.py
-start_date_measure_pf_breakdown = "2023-11-01"
+start_date_measure_pf_breakdown = "2003-11-01"
 monthly_intervals_measure_pf_breakdown = monthly_dashboard_intervals
 
 # Measure: measures_definition_pf_descriptive_stats.py
-start_date_measure_descriptive_stats = "2023-11-01"
+start_date_measure_descriptive_stats = "2003-11-01"
 monthly_intervals_measure_descriptive_stats = monthly_dashboard_intervals
 
 # Not in the project.yaml
 # Measure: measures_definition_pf_med_counts.py
-start_date_measure_med_counts = "2023-11-01"
+start_date_measure_med_counts = "2003-11-01"
 monthly_intervals_measure_med_counts = monthly_dashboard_intervals
 
 

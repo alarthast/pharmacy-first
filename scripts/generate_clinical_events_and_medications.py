@@ -53,8 +53,8 @@ with open("codelists.json", "w") as f:
 EVENTS_START_DATE, EVENTS_END_DATE = config.get_dummy_data_date_range()
 NUM_POSSIBLE_DAYS = (EVENTS_END_DATE - EVENTS_START_DATE).days
 # Our spec will ask for 2023-11-01 to 2025-01-31 inclusive
-assert EVENTS_START_DATE == datetime.date(2023, 11, 1), EVENTS_START_DATE
-assert EVENTS_END_DATE == datetime.date(2025, 2, 1)
+assert EVENTS_START_DATE == datetime.date(2003, 11, 1), EVENTS_START_DATE
+assert EVENTS_END_DATE == datetime.date(2005, 2, 1)
 
 ClinicalEventsRow = collections.namedtuple(
     "ClinicalEventsRow", ["patient_id", "consultation_id", "date", "snomedct_code"]
