@@ -108,7 +108,7 @@ def get_age_band(patients, index_date):
 
 
 def get_imd(addresses, index_date):
-    imd_rounded = addresses.for_patient_on(index_date).imd_rounded
+    imd_rounded = addresses.for_patient_on(index_date).imd_rounded_2019
     max_imd = 32844
     imd_quintile = case(
         when((imd_rounded >= 0) & (imd_rounded < int(max_imd * 1 / 5))).then(
