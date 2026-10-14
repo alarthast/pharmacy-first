@@ -67,14 +67,11 @@ pf_med_codelist = (
     + urinary_tract_infection_tx_codelist
 )
 # Community Pharmacist Consultation Service for minor illness - 1577041000000109
-# pf_consultation_cp_minorillness = ["1577041000000109"]
-pf_consultation_cp_minorillness = ["1022291000000105"]  # fudged
+pf_consultation_cp_minorillness = ["1577041000000109"]
 # Pharmacy First service - 983341000000102
-# pf_consultation_service = ["983341000000102"]
-pf_consultation_service = ["1017381000000106"]  # fudged
+pf_consultation_service = ["983341000000102"]
 # Community Pharmacy First Service - 2129921000000100
-# pf_consultation_cp_service = ["2129921000000100"]
-pf_consultation_cp_service = ["1005681000000107"]  # fudged
+pf_consultation_cp_service = ["2129921000000100"]
 
 pf_consultation_events_dict = {
     # Community Pharmacist (CP) Consultation Service for minor illness (procedure)
