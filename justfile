@@ -2,7 +2,7 @@ set dotenv-load := true
 
 OPENSAFELY_CLI_DIR := "${REPOS_DIR}/opensafely-cli"
 EHRQL_DIR := "${REPOS_DIR}/ehrql"
-EHRQL_METADATA :='{"project_id": "POS-YYYY-XXXX", "workspace_id": "a-project-workspace","job_id": "a1b2c3d4e5f6g7"}'
+export EHRQL_METADATA :='{"project_id": "POS-YYYY-XXXX", "workspace_id": "a-project-workspace","job_id": "a1b2c3d4e5f6g7"}'
 
 venv:
     test -d .venv/ || uv venv --python 3.13
@@ -38,6 +38,14 @@ dummy-tables: install-ehrql
 
 ehrql *args: venv install-ehrql
     .venv/bin/ehrql {{ args }}
+
+generate-sql definition_file num_queries intervals="15":
+    just ehrql generate-sql {{ definition_file }} --backend emisv2 --output {{ without_extension(definition_file) }}.sql
+    just truncate-sql {{ without_extension(definition_file) }}.sql {{ num_queries }} {{ intervals }} false
+    just truncate-sql {{ without_extension(definition_file) }}.sql {{ num_queries }} {{ intervals }} true
+
+truncate-sql sql_file num_queries intervals="15" omit="false":
+    uv run scripts/trunc.py "{{ sql_file }}" {{ num_queries }} --intervals {{ intervals }} {{ if omit == "true" { "--omit-inserts" } else { "" } }}
 
 @nuke:
     rm -rf metadata/ && mkdir metadata
