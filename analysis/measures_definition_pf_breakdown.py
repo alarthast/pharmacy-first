@@ -60,7 +60,7 @@ imd_quintile = case(
 # but allows the code to run for now.
 # TODO: Rename region variables to reference MSOA
 addr = addresses.for_patient_on(INTERVAL.start_date)
-latest_region = case(
+latest_msoa_code = case(
     when(addr.msoa_code.is_not_null()).then(addr.msoa_code),
     otherwise="Missing",
 )
@@ -80,7 +80,7 @@ breakdown_metrics = {
     "age_band": age_band,
     "sex": patients.sex,
     "imd": imd_quintile,
-    "region": latest_region,
+    "msoa_code": latest_msoa_code,
     "ethnicity": ethnicity_combined,
 }
 

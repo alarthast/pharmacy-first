@@ -4,8 +4,8 @@ library(readr)
 library(purrr)
 library(scales)
 
-# Dataset definition file path output/population/pf_population.csv.gz
-df_pf_tab <- read_csv(here("output", "population", "pf_tables.csv.gz"))
+# Dataset definition file path output/population/pf_population_raw.csv
+df_pf_tab <- read_csv(here("output", "population", "pf_tables_raw.csv"))
 
 df_demographics_table <- df_pf_tab %>%
   select(
