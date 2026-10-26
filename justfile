@@ -2,6 +2,7 @@ set dotenv-load := true
 
 OPENSAFELY_CLI_DIR := "${REPOS_DIR}/opensafely-cli"
 EHRQL_DIR := "${REPOS_DIR}/ehrql"
+EHRQL_METADATA :='{"project_id": "POS-YYYY-XXXX", "workspace_id": "a-project-workspace","job_id": "a1b2c3d4e5f6g7"}'
 
 venv:
     test -d .venv/ || uv venv --python 3.13
